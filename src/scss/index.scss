@@ -38,6 +38,7 @@ body {
 .section {
     width: 100%;
     flex: 1;
+    overflow: hidden;
     .scroll {
         width: 100%;
         .address {
@@ -98,4 +99,10 @@ body {
             }
         }
     }
+}
+
+.footer {
+    width: 100%;
+    height: pxTorem(50px);
+    background: red;
 }
