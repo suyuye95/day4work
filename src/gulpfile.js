@@ -7,6 +7,8 @@ var fs = require('fs');
 var url = require('url');
 var data = require('./data.json');
 var uglify = require('gulp-uglify');
+var htmlmin = require('gulp-htmlmin');
+var imagemin = require('gulp-imagemin')
 
 //编译sass
 gulp.task('minSass', function() {
@@ -56,15 +58,42 @@ gulp.task('copyIcon', function() {
 
 //压缩自己的js文件并且拷贝
 gulp.task('minJs', function() {
-    gulp.src('./js/yjs/*.js')
+    return gulp.src('./js/yjs/*.js')
         .pipe(uglify())
         .pipe(gulp.dest('../bulid/js/yjs/'))
 })
 
 //拷贝所有js文件
 gulp.task('copyJs', function() {
-    gulp.src(['./js/**/*.js', '!./js/yjs/*.js'])
+    return gulp.src(['./js/**/*.js', '!./js/yjs/*.js'])
         .pipe(gulp.dest('../bulid/js/'))
 })
 
-gulp.task('bulidDev', gulp.series('copyCss', 'copyIcon', 'copyJs', 'minJs'))
+
+//压缩html
+gulp.task('minhtml', function() {
+    return gulp.src('./*.html')
+        .pipe(htmlmin({
+            collapseWhitespace: true
+        }))
+        .pipe(gulp.dest('../bulid/'))
+})
+
+//压缩img并拷贝
+gulp.task('minimg', function() {
+    return gulp.src('./imgs/*.{png,jpg,gif,ico}')
+        .pipe(imagemin({
+            optimizationLevel: 5
+        }))
+        .pipe(gulp.dest('../bulid/imgs/'))
+})
+
+//拷贝swipercss
+gulp.task('copyswiper', function() {
+    return gulp.src('./swipercss/*.css')
+        .pipe(cleanCss())
+        .pipe(gulp.dest('../bulid/swipercss/'))
+})
+
+
+gulp.task('bulidDev', gulp.series('copyCss', 'copyIcon', 'copyJs', 'copyswiper', 'minimg', 'minhtml', 'minJs'))
